@@ -142,7 +142,7 @@ ReaderPointer readerAddChar(ReaderPointer const readerPointer, boa_char ch) {
 
 		case MODE_ADDIT:
 			/* TO_DO: Adjust new size */
-			new size = readerPointer->size + readerPointer->size;
+			newSize = readerPointer->size + readerPointer->size;
 			/* TO_DO: Defensive programming */
 			if (newSize < 0)
 				return READER_ERROR;
@@ -157,7 +157,7 @@ ReaderPointer readerAddChar(ReaderPointer const readerPointer, boa_char ch) {
 
 		case MODE_MULTI:
 			/* TO_DO: Adjust new size */
-			new size = readerPointer->size * readerPointer->size;
+			newSize = readerPointer->size * readerPointer->size;
 			/* TO_DO: Defensive programming */
 			if (newSize < 0)
 				return READER_ERROR;
@@ -458,7 +458,7 @@ boa_char readerGetChar(ReaderPointer const readerPointer) {
 	if (!readerPointer)
 		return NULL;
 	/* TO_DO: Check condition to read/wrte */
-	if(position -> read == position -> write)
+	//if(readerPointerposition -> read == position -> write)
 
 	/* TO_DO: Set EOB flag */
 
