@@ -79,19 +79,20 @@ enum READER_MODE {
 /* Add your bit-masks constant definitions here - Defined for BOA */
 /* BITS                                (7654.3210) */
 #define READER_DEFAULT_FLAG 0x00 	/* (0000.0000)_2 = (000)_10 */
+
 /* TO_DO: BIT 3: FUL = Full */
-#define SET_FUL 0x04	/*0000.1000 - OR Operator*/
+#define SET_FUL 0x08	/*0000.1000 OR Operator*/
 #define RESET_FUL 0xF7	/*1111.0111 - AND Operator*/
-#define CHECL_FUL SET_FUL	
+#define CHECK_FUL SET_FUL 	
 
 /* TO_DO: BIT 2: EMP: Empty */
-#define SET_EMP 0x03	/*0000.0100 - OR Operator*/
-#define RESET_EMP 0xFB	/*1111.1011*/
+#define SET_EMP 0x04	/*0000.0100 - OR Operator*/
+#define RESET_EMP 0xFB	/*1111.1011 - AND Operator*/
 #define CHECK_EMP SET_EMP	
 
 /* TO_DO: BIT 1: REL = Relocation */
 #define SET_REL 0x02	/*0000.0010 - OR Operator*/
-#define RESET_REL 0xFC	/*1111.1101 - AND Operator*/
+#define RESET_REL 0xFD	/*1111.1101 - AND Operator*/
 #define CHECK_REL SET_REL	
 
 /* TO_DO: BIT 0: END = EndOfBuffer */
