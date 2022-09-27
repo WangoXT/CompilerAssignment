@@ -5,18 +5,29 @@
 * Author: Svillen Ranev - Paulo Sousa
 * Professors: Paulo Sousa
 ************************************************************
- _________________________________
-|                                 |
-| ........ BOA LANGUAGE ......... |
-|     __    __    __    __        |
-|    /  \  /  \  /  \  /  \       |
-| __/  __\/  __\/  __\/  __\__    |
-| _/  /__/  /__/  /__/  /_____|   |
-|  \_/ \   / \   / \   / \  \___  |
-|       \_/   \_/   \_/   \___o_> |
-|                                 |
-| .. ALGONQUIN COLLEGE - 2022F .. |
-|_________________________________|
+ _____________________________________
+|                                     |
+|........... BABEL LANGUAGE ..........|
+|__________       ___.          .__   |
+|\______   \_____ \_ |__   ____ |  |  |
+| |    |  _/\__  \ | __ \_/ __ \|  |  |
+| |    |   \ / __ \| \_\ \  ___/|  |__|
+| |______  /(____  /___  /\___  >____/|
+|		 \/      \/    \/     \/      |
+|             _   _   _               |
+|            |;|_|;|_|;|              |
+|            \\.    .  /              |
+|             \\:  .  /               |
+|              ||:   |                |
+|              ||:.  |                |
+|              ||:  .|                |
+|              ||:   |                |
+|              ||: , |                |
+|              ||:   |                |
+|              ||: . |                |
+|              ||_   |                |
+| .. ALGONQUIN COLLEGE - 2022F .......|
+|_____________________________________|
 
 */
 
@@ -158,7 +169,7 @@ ReaderPointer readerAddChar(ReaderPointer const readerPointer, bab_char ch) {
 
 		case MODE_ADDIT:
 			/* TO_DO: Adjust new size */
-			newSize = readerPointer->size + readerPointer->increment;
+			newSize = readerPointer->size + readerPointer->size;
 			/* TO_DO: Defensive programming */
 			if (newSize < 0)
 				return NULL;
@@ -185,6 +196,7 @@ ReaderPointer readerAddChar(ReaderPointer const readerPointer, bab_char ch) {
 			readerPointer->content = tempReader;
 			readerPointer->size = newSize;
 			break;
+
 		default:
 			return NULL;
 		}
