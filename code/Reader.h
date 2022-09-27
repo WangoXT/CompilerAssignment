@@ -108,46 +108,46 @@ enum READER_MODE {
 
 /* Offset declaration */
 typedef struct position {
-	boa_intg mark;			/* the offset to the mark position (in chars) */
-	boa_intg read;			/* the offset to the get a char position (in chars) */
-	boa_intg wrte;			/* the offset to the add chars (in chars) */
+	bab_intg mark;			/* the offset to the mark position (in chars) */
+	bab_intg read;			/* the offset to the get a char position (in chars) */
+	bab_intg wrte;			/* the offset to the add chars (in chars) */
 } Position;
 
 /* Buffer structure */
 typedef struct bufferReader {
-	boa_char*	content;			/* pointer to the beginning of character array (character buffer) */
-	boa_intg	size;				/* current dynamic memory size (in bytes) allocated to character buffer */
-	boa_intg	increment;			/* character array increment factor */
-	boa_intg	mode;				/* operational mode indicator */
-	boa_byte	flags;				/* contains character array reallocation flag and end-of-buffer flag */
+	bab_char*	content;			/* pointer to the beginning of character array (character buffer) */
+	bab_intg	size;				/* current dynamic memory size (in bytes) allocated to character buffer */
+	bab_intg	increment;			/* character array increment factor */
+	bab_intg	mode;				/* operational mode indicator */
+	bab_byte	flags;				/* contains character array reallocation flag and end-of-buffer flag */
 	Position	position;			/* Offset / position field */
-	boa_intg	histogram[NCHAR];	/* Statistics of chars */
+	bab_intg	histogram[NCHAR];	/* Statistics of chars */
 } BufferReader, * ReaderPointer;
 
 /* FUNCTIONS DECLARATION:  .................................. */
 /* General Operations */
-ReaderPointer	readerCreate		(boa_intg, boa_intg, boa_intg);
-ReaderPointer	readerAddChar		(ReaderPointer const, boa_char);
-boa_boln		readerClear		    (ReaderPointer const);
-boa_boln		readerFree		    (ReaderPointer const);
-boa_boln		readerIsFull		(ReaderPointer const);
-boa_boln		readerIsEmpty		(ReaderPointer const);
-boa_boln		readerSetMark		(ReaderPointer const, boa_intg);
-boa_intg		readerPrint		    (ReaderPointer const);
-boa_intg		readerLoad			(ReaderPointer const, FILE* const);
-boa_boln		readerRecover		(ReaderPointer const);
-boa_boln		readerRetract		(ReaderPointer const);
-boa_boln		readerRestore		(ReaderPointer const);
+ReaderPointer	readerCreate		(bab_intg, bab_intg, bab_intg);
+ReaderPointer	readerAddChar		(ReaderPointer const, bab_char);
+bab_boln		readerClear		    (ReaderPointer const);
+bab_boln		readerFree		    (ReaderPointer const);
+bab_boln		readerIsFull		(ReaderPointer const);
+bab_boln		readerIsEmpty		(ReaderPointer const);
+bab_boln		readerSetMark		(ReaderPointer const, bab_intg);
+bab_intg		readerPrint		    (ReaderPointer const);
+bab_intg		readerLoad			(ReaderPointer const, FILE* const);
+bab_boln		readerRecover		(ReaderPointer const);
+bab_boln		readerRetract		(ReaderPointer const);
+bab_boln		readerRestore		(ReaderPointer const);
 /* Getters */
-boa_char		readerGetChar		(ReaderPointer const);
-boa_char*		readerGetContent	(ReaderPointer const, boa_intg);
-boa_intg		readerGetPosRead	(ReaderPointer const);
-boa_intg		readerGetPosWrte	(ReaderPointer const);
-boa_intg		readerGetPosMark	(ReaderPointer const);
-boa_intg		readerGetSize		(ReaderPointer const);
-boa_intg		readerGetInc		(ReaderPointer const);
-boa_intg		readerGetMode		(ReaderPointer const);
-boa_byte		readerGetFlags		(ReaderPointer const);
-boa_intg		readerShowStat		(ReaderPointer const);
+bab_char		readerGetChar		(ReaderPointer const);
+bab_char*		readerGetContent	(ReaderPointer const, bab_intg);
+bab_intg		readerGetPosRead	(ReaderPointer const);
+bab_intg		readerGetPosWrte	(ReaderPointer const);
+bab_intg		readerGetPosMark	(ReaderPointer const);
+bab_intg		readerGetSize		(ReaderPointer const);
+bab_intg		readerGetInc		(ReaderPointer const);
+bab_intg		readerGetMode		(ReaderPointer const);
+bab_byte		readerGetFlags		(ReaderPointer const);
+bab_intg		readerShowStat		(ReaderPointer const);
 
 #endif

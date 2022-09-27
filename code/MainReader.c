@@ -5,18 +5,18 @@
 * Author: Svillen Ranev - Paulo Sousa
 * Professors: Paulo Sousa
 ************************************************************
- _________________________________
-|                                 |
-| ........ BOA LANGUAGE ......... |
-|     __    __    __    __        |
-|    /  \  /  \  /  \  /  \       |
-| __/  __\/  __\/  __\/  __\__    |
-| _/  /__/  /__/  /__/  /_____|   |
-|  \_/ \   / \   / \   / \  \___  |
-|       \_/   \_/   \_/   \___o_> |
-|                                 |
-| .. ALGONQUIN COLLEGE - 2022F .. |
-|_________________________________|
+ _____________________________________
+|                                     |
+|........... BABEL LANGUAGE ..........|
+|__________       ___.          .__   |
+|\______   \_____ \_ |__   ____ |  |  |
+| |    |  _/\__  \ | __ \_/ __ \|  |  |
+| |    |   \ / __ \| \_\ \  ___/|  |__|
+| |______  /(____  /___  /\___  >____/|
+|		 \/      \/    \/     \/      |
+|                                     |
+| .. ALGONQUIN COLLEGE - 2022F .......|
+|_____________________________________|
 
 */
 
@@ -80,11 +80,11 @@
  *  Function declarations
  * -------------------------------------------------------------
  */
-boa_void bErrorPrint(boa_char* fmt, ...);
-boa_void displayBuffer(BufferReader* ptr_Buffer);
-boa_long getFileSize(boa_char* fname);
-boa_intg isNumber(const boa_char* ns);
-boa_void startReader(boa_char*, boa_char*, boa_char, boa_intg, boa_intg);
+bab_void bErrorPrint(bab_char* fmt, ...);
+bab_void displayBuffer(BufferReader* ptr_Buffer);
+bab_long getFileSize(bab_char* fname);
+bab_intg isNumber(const bab_char* ns);
+bab_void startReader(bab_char*, bab_char*, bab_char, bab_intg, bab_intg);
 
 /*
 ************************************************************
@@ -96,13 +96,13 @@ boa_void startReader(boa_char*, boa_char*, boa_char, boa_intg, boa_intg);
 ************************************************************
 */
 
-boa_intg mainReader(boa_intg argc, boa_char** argv) {
+bab_intg mainReader(bab_intg argc, bab_char** argv) {
 
 	/* Create source input buffer */
-	boa_char* program = argv[0];
-	boa_char* input = argv[2];
-	boa_char mode = MODE_FIXED;
-	boa_intg size = 0, increment = 0, wrongNumber = 0;
+	bab_char* program = argv[0];
+	bab_char* input = argv[2];
+	bab_char mode = MODE_FIXED;
+	bab_intg size = 0, increment = 0, wrongNumber = 0;
 
 	/* Missing file name or/and mode parameter */
 	if (argc <= 2) {
@@ -154,12 +154,12 @@ boa_intg mainReader(boa_intg argc, boa_char** argv) {
 *	- Increment: buffer increment.
 ************************************************************
 */
-boa_void startReader(boa_char* program, boa_char* input, boa_char mode, boa_intg size, boa_intg increment) {
+bab_void startReader(bab_char* program, bab_char* input, bab_char mode, bab_intg size, bab_intg increment) {
 
 	ReaderPointer bufferp;		/* pointer to Buffer structure */
 	FILE* fileHandler;			/* input file handle */
-	boa_intg loadSize = 0;		/* the size of the file loaded in the buffer */
-	boa_char symbol;			/* symbol read from input file */
+	bab_intg loadSize = 0;		/* the size of the file loaded in the buffer */
+	bab_char symbol;			/* symbol read from input file */
 
 	/* Create buffer */
 	bufferp = readerCreate(size, (char)increment, mode);
@@ -217,12 +217,12 @@ boa_void startReader(boa_char* program, boa_char* input, boa_char mode, boa_intg
 ************************************************************
 */
 
-boa_void bErrorPrint(boa_char* fmt, ...) {
+bab_void bErrorPrint(bab_char* fmt, ...) { 
 	/* Initialize variable list */
 	va_list ap;
 	va_start(ap, fmt);
 
-	(boa_void)vfprintf(stderr, fmt, ap);
+	(bab_void)vfprintf(stderr, fmt, ap);
 	va_end(ap);
 
 	/* Move to new line */
@@ -237,7 +237,7 @@ boa_void bErrorPrint(boa_char* fmt, ...) {
 ************************************************************
 */
 
-boa_void displayBuffer(BufferReader* ptr_Buffer) {
+bab_void displayBuffer(BufferReader* ptr_Buffer) {
 	printf("\nPrinting buffer parameters:\n\n");
 	printf("The capacity of the buffer is:  %d\n",
 		readerGetSize(ptr_Buffer));
@@ -267,9 +267,9 @@ boa_void displayBuffer(BufferReader* ptr_Buffer) {
 ************************************************************
 */
 
-boa_long getFileSize(boa_char* fname) {
+bab_long getFileSize(bab_char* fname) {
 	FILE* input;
-	boa_long flength;
+	bab_long flength;
 	input = fopen(fname, "r");
 	if (input == NULL) {
 		bErrorPrint("%s%s", "Cannot open file: ", fname);
@@ -291,8 +291,8 @@ boa_long getFileSize(boa_char* fname) {
 ************************************************************
 */
 
-boa_intg isNumber(const boa_char* ns) {
-	boa_char c; boa_intg i = 0;
+bab_intg isNumber(const bab_char* ns) {
+	bab_char c; bab_intg i = 0;
 	if (ns == NULL) return 0;
 	while ((c = ns[i++]) == 0) {
 		if (!isdigit(c)) return 0;

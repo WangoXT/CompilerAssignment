@@ -5,8 +5,8 @@
     {
       "type": "default",
       "project": "CMakeLists.txt",
-      "projectTarget": "BoaCompiler.exe",
-      "name": "BoaCompiler.exe",
+      "projectTarget": "BabCompiler.exe",
+      "name": "BabCompiler.exe",
       "args": [
         "R",
         "README.txt"

@@ -48,8 +48,8 @@
  */
  
 /* Logical constants - adapt for your language */
-#define BOA_TRUE  1
-#define BOA_FALSE 0
+#define BAB_TRUE  1
+#define BAB_FALSE 0
 
 /*
 ------------------------------------------------------------
@@ -59,16 +59,16 @@ NOTE: Some types may not be directly used by your language,
 ------------------------------------------------------------
 */
 /* TO_DO: Define your typedefs */
-typedef char			boa_char;
-typedef int				boa_intg;
-typedef float			boa_real;
-typedef void			boa_void;
+typedef char			bab_char;
+typedef int				bab_intg;
+typedef float			bab_real;
+typedef void			bab_void;
 
-typedef unsigned char	boa_boln;
-typedef unsigned char	boa_byte;
+typedef unsigned char	bab_boln;
+typedef unsigned char	bab_byte;
 
-typedef long			boa_long;
-typedef double			boa_doub;
+typedef long			bab_long;
+typedef double			bab_doub;
 
 /*
 ------------------------------------------------------------
@@ -90,11 +90,11 @@ Main functions signatures
 (Code will be updated during next assignments)
 ------------------------------------------------------------
 */
-boa_intg mainReader  (boa_intg argc, boa_char** argv);
+bab_intg mainReader  (bab_intg argc, bab_char** argv);
 /*
 boa_intg mainScanner (boa_intg argc, boa_char** argv);
 boa_intg mainParser  (boa_intg argc, boa_char** argv);
 */
-boa_void printLogo();
+bab_void printLogo();
 
 #endif

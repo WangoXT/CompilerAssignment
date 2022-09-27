@@ -1,0 +1,10 @@
+# ninja log v5
+3	329	6859290936817649	CMakeFiles/BoaCompiler.dir/Compilers.c.obj	5120b91454c102c7
+5	333	6859290936867647	CMakeFiles/BoaCompiler.dir/MainReader.c.obj	21b77c445e5ce211
+1	43	6859453721477987	CMakeFiles/BoaCompiler.dir/Reader.c.obj	5fc954fd24dd790c
+44	126	6859453722127989	BoaCompiler.exe	8c0f1dce462aba65
+4	448	6860174963475230	CMakeFiles/BabCompiler.dir/Reader.c.obj	4a33107364ad2a1
+1	448	6860174963475230	CMakeFiles/BabCompiler.dir/Compilers.c.obj	55c3713c33bc339d
+0	161	6860181909896251	CMakeFiles/BabCompiler.dir/Compilers.c.obj	55c3713c33bc339d
+3	161	6860181909896251	CMakeFiles/BabCompiler.dir/MainReader.c.obj	d4e49f24745123e9
+162	470	6860181912916147	BabCompiler.exe	7be07bb6bb6d5c54
