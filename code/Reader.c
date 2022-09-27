@@ -76,30 +76,40 @@ ReaderPointer readerCreate(boa_intg size, boa_intg increment, boa_intg mode) {
 	/* TO_DO: Defensive programming */
 	if ((size < 0) || (increment < 0))
 		return NULL;
+
 	/* TO_DO: Adjust the values according to parameters */
+	if (!size) {
+		size = READER_DEFAULT_SIZE;
+		increment = READER_DEFAULT_INCREMENT;
+	}
 
-	size = READER_DEFAULT_SIZE;
-	increment = READER_DEFAULT_INCREMENT;
+	if(!increment)
 	mode = MODE_FIXED;
-	readerPointer = (ReaderPointer)calloc(1, sizeof(BufferReader));
 
+	if (mode != MODE_FIXED && mode != MODE_ADDIT && mode != MODE_MULTI)
+		readerPointer = NULL;
+
+	readerPointer = (ReaderPointer)calloc(1, sizeof(BufferReader));
 	/* TO_DO: Defensive programming */
-	if (readerPointer) {
-		readerPointer->content = (boa_char*)malloc(size);
-	readerPointer->size = size;
+	if (!readerPointer) {
+		return NULL;
 	}
 
 	/* TO_DO: Defensive programming */
-	
+	if(readerPointer)
+		readerPointer->content = (boa_char*)malloc(size);
+
 	/* TO_DO: Initialize the histogram */
-	readerPointer->histogram;
+	boa_intg i;
+	for(i = 0; i < NCHAR; i++)
+	readerPointer->histogram[i] = 0;
 
 	readerPointer->increment = increment;
 	readerPointer->mode = mode;
-
+	readerPointer->size = size;
 
 	/* TO_DO: Initialize flags */
-	readerPointer->flags;
+	readerPointer->flags |= READER_DEFAULT_FLAG;
 
 	/* TO_DO: The created flag must be signalized as EMP */
 	readerPointer->flags |= SET_EMP;
@@ -127,22 +137,17 @@ ReaderPointer readerAddChar(ReaderPointer const readerPointer, boa_char ch) {
 	boa_char* tempReader = NULL;
 	boa_intg newSize = 0;
 	/* TO_DO: Defensive programming */
-	if (!readerPointer)
+	if (!readerPointer && ch < 31 || ch > 127)
 		return NULL;
-	if (ch < 31 || ch > 127)
-		return NULL;
-
-	if (readerPointer->histogram[ch]++)
 
 		/* TO_DO: Reset Realocation */
-		readerPointer->flags = readerPointer->flags & RESET_REL;
+	readerPointer->flags &= RESET_REL;
 	/* TO_DO: Test the inclusion of chars */
-	if(ch<0){
-		return NULL;
-	}
+		if (readerPointer->histogram[ch]++)
+
 	if (readerPointer->position.wrte * (boa_intg)sizeof(boa_char) < readerPointer->size) {
 		/* TO_DO: This buffer is NOT full */
-
+		readerPointer->position.wrte++;
 	} else {
 		/* TO_DO: Reset Full flag */
 		readerPointer->flags &= RESET_FUL;
@@ -168,10 +173,10 @@ ReaderPointer readerAddChar(ReaderPointer const readerPointer, boa_char ch) {
 
 		case MODE_MULTI:
 			/* TO_DO: Adjust new size */
-			newSize = readerPointer->size * readerPointer->size;
+			newSize = readerPointer->size * readerPointer->increment;
 			/* TO_DO: Defensive programming */
 			if (newSize < 0)
-				return READER_ERROR;
+				return NULL;
 			tempReader = realloc(readerPointer->content, newSize);
 			if (!tempReader)
 				return NULL;
@@ -188,7 +193,7 @@ ReaderPointer readerAddChar(ReaderPointer const readerPointer, boa_char ch) {
 			/* TO_DO: Defensive programming */
 			if (!tempReader)
 				return NULL;
-			readerPointer->size = tempReader;
+			readerPointer->size = newSize;
 			readerPointer->content = tempReader;
 		/* TO_DO: Check Relocation */
 		if (readerPointer->content != tempReader)
@@ -358,7 +363,7 @@ boa_intg readerPrint(ReaderPointer const readerPointer) {
 		return READER_ERROR;
 	c = readerGetChar(readerPointer);
 	/* TO_DO: Check flag if buffer EOB has achieved */
-	if (!c)
+	if (c < 0)
 		return READER_ERROR;
 
 	while (cont < readerPointer->position.wrte) {
@@ -498,19 +503,19 @@ boa_boln readerRestore(ReaderPointer const readerPointer) {
 *************************************************************
 */
 boa_char readerGetChar(ReaderPointer const readerPointer) {
-	/*DONE??*/
+	/*DONE*/
 	/* TO_DO: Defensive programming */
 	if (!readerPointer)
-		return NULL;
+		return READER_ERROR;
 	/* TO_DO: Check condition to read/wrte */
 	if (readerPointer->position.read == readerPointer->position.wrte) {
 		/* TO_DO: Set EOB flag */
-		readerPointer->flags | SET_END;
+		readerPointer->flags |= SET_END;
 		return READER_TERMINATOR;
 	}
 	else {
 		/* TO_DO: Reset EOB flag */
-		readerPointer->flags & RESET_END;
+		readerPointer->flags &= RESET_END;
 		return readerPointer->content[readerPointer->position.read++];
 	}
 }
@@ -719,10 +724,16 @@ boa_byte readerGetFlags(ReaderPointer const readerPointer) {
 *************************************************************
 */
 boa_intg readerShowStat(ReaderPointer const readerPointer) {
-	/*DONE???*/
+	/*DONE*/
 	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return READER_ERROR;
 	/* TO_DO: Updates the histogram */
-	return readerPointer -> histogram[NCHAR];
+	boa_intg i;
+	boa_intg numChars = 0;
+	for (i = 0; i < NCHAR; i++)
+		if (readerPointer->histogram[i] > 0)
+			numChars++;
+
+	return numChars;
 }
