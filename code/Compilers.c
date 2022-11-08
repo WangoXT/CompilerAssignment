@@ -94,11 +94,12 @@ bab_intg main(int argc, char** argv) {
 		printf("%s%c%s", "\n[Option '", PGM_READER, "': Starting READER .....]\n\n");
 		mainReader(argc, argv);
 		break;
-	/*
+	
 	case PGM_SCANNER:
 		printf("%s%c%s", "\n[Option '", PGM_SCANNER, "': Starting SCANNER ....]\n\n");
 		mainScanner(argc, argv);
 		break;
+	/*
 	case PGM_PARSER:
 		printf("%s%c%s", "\n[Option '", PGM_PARSER, "': Starting PARSER .....]\n\n");
 		mainParser(argc, argv);
@@ -136,7 +137,7 @@ bab_void printLogo() {
 		"| |    |  _/ \\__ \\ | __ \\_/ __ \\|  |  |\n",
 		"| |    |   \\ / __ \\| \\_\\ \\  ___/|  |__|\n",
 		"| |______  /(____ /___  / \____> _____/|\n",
-		"|	 \\/     \\/    \\/              |\n",
+		"|	 \\/     \\/    \\/                |\n",
 		"|             _   _   _               |\n",
 		"|            |;|_|;|_|;|              |\n",         
 		"|            \\\\.    .  /              |\n",
