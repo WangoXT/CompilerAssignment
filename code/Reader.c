@@ -138,60 +138,45 @@ ReaderPointer readerCreate(bab_intg size, bab_intg increment, bab_intg mode) {
 ReaderPointer readerAddChar(ReaderPointer const readerPointer, bab_char ch) {
 	bab_char* tempReader;
 	bab_intg newSize = 0;
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return NULL;
 	else {
-		/* TO_DO: Reset Realocation */
 		readerPointer->flags &= RESET_REL;
-		/* TO_DO: Test the inclusion of chars */
 		if (readerPointer->position.wrte * (bab_intg)sizeof(bab_char) >= READER_MAX_SIZE) {
 			return NULL;
-			/* TO_DO: This buffer is NOT full  */
 		}
-		/* TO_DO: Reset Full flag */
-		//readerPointer->flags &= READER_RESET_FUL;
 		if (readerIsFull(readerPointer)) {
 
 			switch (readerPointer->mode) {
-			case MODE_FIXED:       // ENTERS THIS, MODE DOESN'T CHANGE TO ADDIT OR MULTI
+			case MODE_FIXED:
 				return NULL;
 			case MODE_ADDIT:
-				/* TO_DO: Adjust new size */
 				newSize = readerPointer->size + readerPointer->increment;
-				/* TO_DO: Defensive programming */
 				if (newSize < 0 || newSize <= readerPointer->size)
 					return NULL;
 
 				break;
 			case MODE_MULTI:
-				/* TO_DO: Adjust new size */
 				newSize = readerPointer->size * readerPointer->increment;
-				/* TO_DO: Defensive programming */
 				if (newSize < 0 || newSize <= readerPointer->size)
 					return NULL;
 				break;
 			default:
 				return NULL;
 			}
-			/* TO_DO: New reader allocation */
 			tempReader = (char*)realloc(readerPointer->content, newSize);
-			/* TO_DO: Defensive programming */
 			if (!tempReader)
 				return NULL;
-			/* TO_DO: Check Relocation */
 			readerPointer->flags &= RESET_FUL;
 			readerPointer->flags |= SET_REL;
 			readerPointer->content = tempReader;
 			readerPointer->size = newSize;
 		}
-		/* TO_DO: Add the char */
 		readerPointer->content[readerPointer->position.wrte++] = ch;
 		if (readerPointer->position.wrte == readerPointer->size)
 			readerPointer->flags |= SET_FUL;
 		if (ch == READER_TERMINATOR)
 			readerPointer->flags |= SET_END;
-		/* TO_DO: Updates histogram */
 		readerPointer->histogram[ch]++;
 		return readerPointer;
 	}
@@ -212,10 +197,8 @@ ReaderPointer readerAddChar(ReaderPointer const readerPointer, bab_char ch) {
 *************************************************************
 */
 bab_boln readerClear(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return BAB_FALSE;
-	/* TO_DO: Adjust flags original */
 	readerPointer->position.mark = 0;
 	readerPointer->position.wrte = 0;
 	readerPointer->position.read = 0;
@@ -242,10 +225,8 @@ bab_boln readerClear(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_boln readerFree(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return BAB_FALSE;
-	/* TO_DO: Free pointers */
 	free(readerPointer->content);
 	free(readerPointer);
 	return BAB_TRUE;
@@ -266,10 +247,8 @@ bab_boln readerFree(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_boln readerIsFull(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return BAB_FALSE;
-	/* TO_DO: Check flag if buffer is FUL */
 	if ((readerPointer->flags & CHECK_FUL) == CHECK_FUL)
 		return BAB_TRUE;
 	else
@@ -292,14 +271,10 @@ bab_boln readerIsFull(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_boln readerIsEmpty(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return BAB_FALSE;
-
-	/* TO_DO: Check flag if buffer is EMP */
 	if ((readerPointer->flags & CHECK_EMP) != BAB_FALSE)
 		return BAB_TRUE;
-	// if readerPointer->position.wrte == 0, if write position is 0 there is nothing in reader, its empty
 	return BAB_FALSE;
 }
 
@@ -319,12 +294,8 @@ bab_boln readerIsEmpty(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_boln readerSetMark(ReaderPointer const readerPointer, bab_intg mark) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return BAB_FALSE;
-	//	if (mark < 0 || mark > readerPointer->position.wrte)
-		//	return DUB_FALSE;
-		/* TO_DO: Adjust mark */
 	readerPointer->position.mark = mark;
 	return BAB_TRUE;
 }
@@ -382,7 +353,6 @@ bab_intg readerPrint(ReaderPointer const readerPointer) {
 bab_intg readerLoad(ReaderPointer const readerPointer, FILE* const fileDescriptor) {
 	bab_intg size = 0;
 	bab_char c;
-	/* TO_DO: Defensive programming */
 	if (!readerPointer || !fileDescriptor)
 		return READER_ERROR;
 	c = (bab_char)fgetc(fileDescriptor);
@@ -394,7 +364,6 @@ bab_intg readerLoad(ReaderPointer const readerPointer, FILE* const fileDescripto
 		c = (char)fgetc(fileDescriptor);
 		size++;
 	}
-	/* TO_DO: Defensive programming */
 	return size;
 }
 
@@ -414,10 +383,8 @@ bab_intg readerLoad(ReaderPointer const readerPointer, FILE* const fileDescripto
 *************************************************************
 */
 bab_boln readerRecover(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return BAB_FALSE;
-	/* TO_DO: Recover positions */
 	readerPointer->position.mark = 0;
 	readerPointer->position.read = 0;
 	return BAB_TRUE;
@@ -439,10 +406,8 @@ bab_boln readerRecover(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_boln readerRetract(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return BAB_FALSE;
-	/* TO_DO: Retract (return 1 pos read) */
 	if (readerPointer->position.read > 0)
 		readerPointer->position.read--;
 
@@ -465,10 +430,8 @@ bab_boln readerRetract(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_boln readerRestore(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return BAB_FALSE;
-	/* TO_DO: Restore positions (read/mark) */
 	readerPointer->position.read = readerPointer->position.mark;
 	return BAB_TRUE;
 }
@@ -490,17 +453,12 @@ bab_boln readerRestore(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_char readerGetChar(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return READER_ERROR;
-	/* TO_DO: Check condition to read/wrte */
 	if (readerPointer->position.read == readerPointer->position.wrte) {
-		//readerPointer->content[readerPointer->position.read] = READER_TERMINATOR;
-		/* TO_DO: Set EOB flag */
 		readerPointer->flags |= SET_END;
 		return READER_TERMINATOR;
 	}
-	/* TO_DO: Reset EOB flag */
 	else {
 		readerPointer->flags &= RESET_END;
 		return readerPointer->content[readerPointer->position.read++];
@@ -524,12 +482,8 @@ bab_char readerGetChar(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_char* readerGetContent(ReaderPointer const readerPointer, bab_intg pos) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return NULL;
-	//if (pos < 0 || pos > readerPointer->position.wrte)
-	//	return NULL;
-	/* TO_DO: Return content (string) */
 	return readerPointer->content + pos;
 
 }
@@ -551,10 +505,8 @@ bab_char* readerGetContent(ReaderPointer const readerPointer, bab_intg pos) {
 *************************************************************
 */
 bab_intg readerGetPosRead(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return READER_ERROR;
-	/* TO_DO: Return read */
 	return readerPointer->position.read;
 
 }
@@ -575,10 +527,8 @@ bab_intg readerGetPosRead(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_intg readerGetPosWrte(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return READER_ERROR;
-	/* TO_DO: Return wrte */
 	return readerPointer->position.wrte;
 
 }
@@ -599,10 +549,8 @@ bab_intg readerGetPosWrte(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_intg readerGetPosMark(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return READER_ERROR;
-	/* TO_DO: Return mark */
 	return readerPointer->position.mark;
 }
 
@@ -622,10 +570,8 @@ bab_intg readerGetPosMark(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_intg readerGetSize(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return READER_ERROR;
-	/* TO_DO: Return size */
 	return readerPointer->size;
 }
 
@@ -644,10 +590,8 @@ bab_intg readerGetSize(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_intg readerGetInc(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return READER_ERROR;
-	/* TO_DO: Return increment */
 	return readerPointer->increment;
 }
 
@@ -666,11 +610,8 @@ bab_intg readerGetInc(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_intg readerGetMode(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
-	//|| readerPointer->mode != MODE_ADDIT && readerPointer->mode != MODE_MULTI && readerPointer->mode != MODE_FIXED
 	if (!readerPointer)
 		return READER_ERROR;
-	/* TO_DO: Return mode */
 	return readerPointer->mode;
 }
 
@@ -690,10 +631,8 @@ bab_intg readerGetMode(ReaderPointer const readerPointer) {
 *************************************************************
 */
 bab_byte readerGetFlags(ReaderPointer const readerPointer) {
-	/* TO_DO: Defensive programming */
 	if (!readerPointer)
 		return READER_ERROR;
-	/* TO_DO: Return flags */
 	return readerPointer->flags;
 }
 
@@ -715,10 +654,8 @@ bab_byte readerGetFlags(ReaderPointer const readerPointer) {
 bab_intg readerShowStat(ReaderPointer const readerPointer) {
 	bab_intg counter;
 	bab_intg distinctChars = 0;
-	/* TO_DO: Defensive programming */
 	if (!readerPointer || !readerPointer->histogram)
 		return 0;
-	/* TO_DO: Updates the histogram */
 	for (counter = 0; counter < NCHAR; counter++) {
 		if (readerPointer->histogram[counter] != 0)
 			distinctChars++;

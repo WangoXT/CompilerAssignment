@@ -102,7 +102,7 @@ Main functions signatures
 ------------------------------------------------------------
 */
 bab_intg mainReader  (bab_intg argc, bab_char** argv);
-bab_intg mainScanner (boa_intg argc, boa_char** argv);
+bab_intg mainScanner (bab_intg argc, bab_char** argv);
 /*
 boa_intg mainParser  (boa_intg argc, boa_char** argv);
 */

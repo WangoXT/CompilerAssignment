@@ -142,20 +142,45 @@ Token tokenizer(void) {
 		case ';':
 			currentToken.code = EOS_T;
 			return currentToken;
-		case '$'
+		case '&':
+			currentToken.code = MNID_T;
+			return currentToken;
+		case '_':
+			currentToken.code = VNID_T;
+			return currentToken;
+		case '"':
+			currentToken.code = STR_T;
+			return currentToken;
+		case '(':
+			currentToken.code = LPR_T;
+			return currentToken;
+		case ')':
+			currentToken.code = RPR_T;
+			return currentToken;
+		case '{':
+			currentToken.code = LBR_T;
+			return currentToken;
+		case '}':
+			currentToken.code = RBR_T;
+			return currentToken;
+		case '$':
+			currentToken.code = DTNID_T;
+			return currentToken;
+
 		/* Comments */
-		case '/*':
+		case '#':
 			newc = readerGetChar(sourceBuffer);
 			do {
 				c = readerGetChar(sourceBuffer);
 				if (c == CHARSEOF0 || c == CHARSEOF255) {
 					readerRetract(sourceBuffer);
 					//return currentToken;
+					return currentToken;
 				}
 				else if (c == '\n') {
 					line++;
 				}
-			} while (c != '.' && c != CHARSEOF0 && c != CHARSEOF255);
+			} while (c != '#' && c != CHARSEOF0 && c != CHARSEOF255);
 			break;
 		/* Cases for END OF FILE */
 		case CHARSEOF0:
@@ -267,22 +292,22 @@ bab_intg nextState(bab_intg state, bab_char c) {
 bab_intg nextClass(bab_char c) {
 	bab_intg val = -1;
 	switch (c) {
-	case CHRCOL2:
+	case CHRCOL2: /* Variable Prefix */
 		val = 2;
 		break;
-	case CHRCOL3:
+	case CHRCOL3: /* Method Suffix */
 		val = 3;
 		break;
-	case CHRCOL4:
+	case CHRCOL4: /* Datatype indentifier Prefix */
 		val = 4;
 		break;
-	case CHRCOL5:
+	case CHRCOL5: /* newline */
 		val = 7;
 		break;
-	case CHRCOL6:
+	case CHRCOL6: /* Comment prefix/suffix */
 		val = 8;
 		break;
-	case CHRCOL7:
+	case CHRCOL7: /* Quotations for String Literals */
 		val = 9;
 		break;
 	case CHARSEOF0:
@@ -354,7 +379,15 @@ Token funcID(bab_char lexeme[]) {
 	bab_intg isID = BAB_FALSE;
 	switch (lastch) {
 		case VNIDPREFIX:
-			currentToken.code = VID_T;
+			currentToken.code = VNID_T;
+			isID = BAB_TRUE;
+			break;
+		case MNIDSUFFIX:
+			currentToken.code = MNID_T
+			isID = BAB_TRUE;
+			break;
+		case DTNIDPREFIX:
+			currentToken.code = DTNID_T;
 			isID = BAB_TRUE;
 			break;
 		default:

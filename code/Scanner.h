@@ -55,7 +55,8 @@ enum TOKENS {
 	RTE_T,		/*  9: Run-time error token */
 	INL_T,		/* 10: Run-time error token */
 	SEOF_T,		/* 11: Source end-of-file token */
-	VID_T		/* 12: Variable name identifier token (start: _) */
+	VNID_T,		/* 12: Variable name identifier token (underscore) */
+	DTNID_T		/* Data type token (dollar sign) */
 };
 
 /* TO_DO: Operators token attributes */
@@ -63,12 +64,10 @@ enum TOKENS {
 //typedef enum RelationalOperators { OP_EQ, OP_NE, OP_GT, OP_LT } RelOperator;
 //typedef enum LogicalOperators { OP_AND, OP_OR, OP_NOT } LogOperator;
 typedef enum SourceEndOfFile { SEOF_0, SEOF_255 } EofOperator;
-//typedef enum AccessSpecifiers { AS_PUB, AS_PRO, AS_PVT } AccSpecOperator;
 
 /* TO_DO: Data structures for declaring the token and its attributes */
 typedef union TokenAttribute {
 	bab_intg codeType;      /* integer attributes accessor */
-	//AccSpecOperator accessSpecifierType;
 	//AriOperator arithmeticOperator;		/* arithmetic operator attribute code */
 	//RelOperator relationalOperator;		/* relational operator attribute code */
 	//LogOperator logicalOperator;		/* logical operator attribute code */
@@ -113,36 +112,50 @@ typedef struct Token {
 /* TO_DO: Define lexeme FIXED classes */
 /* These constants will be used on nextClass */
 #define CHRCOL2 '_'		/* Variable Prefix */
-#define CHRCOL3 '&'		/* Method Prefix */
-#define CHRCOL4 '\''	/* new line */
-#define CHRCOL5 '$'		/* Variable indentifier suffix */
-#define CHRCOL6 '#'		/* Comment prefix */
+#define CHRCOL3 '&'		/* Method Suffix */
+#define CHRCOL4 '$'		/* Datatype indentifier Prefix */
+#define CHRCOL5 '\''	/* new line */
+#define CHRCOL6 '#'		/* Comment prefix/suffix */
 #define CHRCOL7 '"'		/* Quotations for String Literals */
 
 /* These constants will be used on VID / MID function */
-#define MNIDPREFIX '&'	/* Method identifier */
+#define MNIDSUFFIX '&'	/* Method identifier */
 #define VNIDPREFIX '_'	/* Variable identifier */
+#define DTNIDPREFIX '$' /* Datatype identifier */
 
 /* TO_DO: Error states and illegal state */
 #define FS		100		/* Illegal state */
 #define ESWR	101		/* Error state with retract */
 #define ESNR	102		/* Error state with no retract */
 
- /* TO_DO: State transition table definition */
-#define TABLE_COLUMNS 7
+
 
 /* TO_DO: Transition table - type of states defined in separate table */
+//static bab_intg transitionTable[][TABLE_COLUMNS] = {
+/*      [A-z] , [0-9],    _,    &,    ", SEOF, other
+	      L(0),  D(1), U(2), M(3), Q(4), E(5),  O(6) */
+	//* s0 */{1,  ESNR, ESNR, ESNR,    4, ESWR, ESNR}, // S0: NOAS
+	//*s1 */{1,     1,    1,    2, ESNR, ESWR,    3}, // S1: NOAS
+	//* s2 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S2: ASNR (MVID)
+	//* s3 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S3: ASWR (KEY)
+	//* s4 */{4,     4,    4,    4,    5, ESWR,    4}, // S4: NOAS
+	//* s5 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S5: ASNR (SL)
+	//* s6 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S6: ASNR (ES)
+	//* s7 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}  // S7: ASWR (ER)
+
+ /* TO_DO: State transition table definition */
+#define TABLE_COLUMNS 7
 static bab_intg transitionTable[][TABLE_COLUMNS] = {
-/*   [A-z] , [0-9],    _,    &,    ", SEOF, other
-	   L(0),  D(1), U(2), M(3), Q(4), E(5),  O(6) */
-	/* s0 */{1,  ESNR, ESNR, ESNR,    4, ESWR, ESNR}, // S0: NOAS
-	/* s1 */{1,     1,    1,    2, ESNR, ESWR,    3}, // S1: NOAS
-	/* s2 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S2: ASNR (MVID)
-	/* s3 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S3: ASWR (KEY)
-	/* s4 */{4,     4,    4,    4,    5, ESWR,    4}, // S4: NOAS
-	/* s5 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S5: ASNR (SL)
-	/* s6 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S6: ASNR (ES)
-	/* s7 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}  // S7: ASWR (ER)
+/*	     [A-z] ,[0-9],    _,    &,    $,    ",    #, SEOF, other
+	       L(0), D(1), V(2), M(3), D(4), Q(5), C(6), E(7),  O(8) */
+	/* s0 */{ 1, ESNR,    1, ESNR,    1,    4,    4, ESWR,  ESNR}, // s0: NOAS
+	/* s1 */{ 1,    1, ESNR, ESNR, ESNR, ESNR, ESWR, ESWR,     3}, // s1: NOAS
+	/* s2 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS}, // s2: ASNR (MVDTID)
+	/* s3 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS}, // s3: ASWR (KEY)
+	/* s4 */{ 4,    4,    4,    4,    4,    4,    4, ESWR,     5}, // s5: NOAS
+	/* s5 */{FS,   FS,   FS,   FS,   FS,   FS,   FS    FS,    FS}, // s6: ASNR (SL)
+	/* s6 */{FS,   FS,   FS,   FS,   FS,   FS,   FS    FS,    FS}, // s7: ASNR (ES)
+	/* s6 */{FS,   FS,   FS,   FS,   FS,   FS,   FS    FS,    FS}, // s7: ASWR (ER)
 };
 
 /* Define accepting states types */
@@ -154,12 +167,13 @@ static bab_intg transitionTable[][TABLE_COLUMNS] = {
 static bab_intg stateType[] = {
 	NOFS, /* 00 */
 	NOFS, /* 01 */
-	FSNR, /* 02 (VID) - Variables */
+	FSNR, /* 02 (MDTVID) - Variables */
 	FSWR, /* 03 (KEY) */
 	NOFS, /* 04 */
 	FSNR, /* 05 (SL) */
 	FSNR, /* 06 (Err1 - no retract) */
 	FSWR  /* 07 (Err2 - retract) */
+
 };
 
 /*
@@ -227,7 +241,7 @@ static bab_char* keywordTable[KWT_SIZE] = {
 	"public",		// declare the field to be public
 
 	"integer",		// declare the field to be an integer
-	"string",		// declare the field to be a string
+	"String",		// declare the field to be a string
 	"double",		// declare the field to be a double
 
 	"startDiagram",	// start a uml diagram

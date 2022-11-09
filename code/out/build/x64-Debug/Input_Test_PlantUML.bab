@@ -1,0 +1,46 @@
+	# hello
+	this is a comment #
+	
+startDiagram
+
+class _Foo {  								
+	private integer age  
+	public getNum&
+}											
+
+class _Bar {									
+	private String name
+	public setName&	
+}											
+
+class _Country {								
+	"Canada"									
+	"U.S"										
+}											
+
+class _Airport {								
+	private string name
+	private country $Country
+	public getName&
+	public getCountry&
+}											
+
+class _Address {								
+	public String city
+	public String state
+	public String country
+	public display&	
+}											
+
+class _Employee {							
+	public integer id
+	public String name
+	public address $Address
+	public display&
+}											
+
+_Foo isA _Bar
+_Country hasA _Airport		
+_Employee hasAn _Address
+
+endDiagram	
