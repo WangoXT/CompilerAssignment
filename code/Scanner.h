@@ -44,7 +44,7 @@
 /* TO_DO: Define Token codes - Create your token classes */
 enum TOKENS {
 	ERR_T,		/*  0: Error token */
-	MNID_T,		/*  1: Method name identifier token (start: &) */
+	VID_T,		/*  1: Method name identifier token (start: &) */
 	STR_T,		/*  2: String literal token */
 	LPR_T,		/*  3: Left parenthesis token */
 	RPR_T,		/*  4: Right parenthesis token */
@@ -55,8 +55,8 @@ enum TOKENS {
 	RTE_T,		/*  9: Run-time error token */
 	INL_T,		/* 10: Run-time error token */
 	SEOF_T,		/* 11: Source end-of-file token */
-	VNID_T,		/* 12: Variable name identifier token (underscore) */
-	DTNID_T		/* Data type token (dollar sign) */
+	MID_T,  	/* 12: Variable name identifier token (underscore) */
+	DTID_T		/* 13: Data type token (dollar sign) */
 };
 
 /* TO_DO: Operators token attributes */
@@ -117,48 +117,34 @@ typedef struct Token {
 #define CHRCOL5 '"'		/* Quotations for String Literals */
 #define CHRCOL6 '#'		/* Comment prefix/suffix */
 #define CHRCOL7 '\''	/* new line */
-
+#define CHRCOL8 ' '     /* whitespace */
 
 
 /* These constants will be used on VID / MID function */
-#define MNIDSUFFIX '&'	/* Method identifier */
-#define VNIDPREFIX '_'	/* Variable identifier */
-#define DTNIDPREFIX '$' /* Datatype identifier */
+#define MIDSUFFIX '&'	/* Method identifier */
+#define VIDPREFIX '_'	/* Variable identifier */
+#define DTIDPREFIX '$' /* Datatype identifier */
 
 /* TO_DO: Error states and illegal state */
 #define FS		100		/* Illegal state */
 #define ESWR	101		/* Error state with retract */
 #define ESNR	102		/* Error state with no retract */
 
-
-
-/* TO_DO: Transition table - type of states defined in separate table */
-//static bab_intg transitionTable[][TABLE_COLUMNS] = {
-/*      [A-z] , [0-9],    _,    &,    ", SEOF, other
-	      L(0),  D(1), U(2), M(3), Q(4), E(5),  O(6) */
-	//* s0 */{1,  ESNR, ESNR, ESNR,    4, ESWR, ESNR}, // S0: NOAS
-	//*s1 */{1,     1,    1,    2, ESNR, ESWR,    3}, // S1: NOAS
-	//* s2 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S2: ASNR (MVID)
-	//* s3 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S3: ASWR (KEY)
-	//* s4 */{4,     4,    4,    4,    5, ESWR,    4}, // S4: NOAS
-	//* s5 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S5: ASNR (SL)
-	//* s6 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}, // S6: ASNR (ES)
-	//* s7 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}  // S7: ASWR (ER)
-
  /* TO_DO: State transition table definition */
-#define TABLE_COLUMNS 9
+#define TABLE_COLUMNS 10
 static bab_intg transitionTable[][TABLE_COLUMNS] = {
-/*	     [A-z] ,[0-9],    _,    &,    $,    ",    #, SEOF, other
-	       L(0), D(1), V(2), M(3), D(4), Q(5), C(6),  E(7),  O(8) */
-	/* s0 */{ 1, ESNR,    1, ESNR,    1,    4,    5,  ESWR,  ESNR}, // s0: NOAS
-	/* s1 */{ 1,    1, ESNR,    2, ESNR, ESNR, ESWR,  ESWR,     3}, // s1: NOAS
-	/* s2 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s2: ASNR (MVDTID)
-	/* s3 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s3: ASWR (KEY)
-	/* s4 */{ 4,    4,    4,    4,    4,    6,    4,  ESWR,     4}, // s4: NOAS
-	/* s5 */{ 4,    4,    4,    4,    4,    4,    6,  ESWR,     4}, // s5: NOAS
-	/* s6 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s6: ASNR (SL)
-	/* s7 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s7: ASNR (ES)
-	/* s8 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s8: ASWR (ER)
+/*	     [A-z] ,[0-9],    _,    &,    $,    ",    #,SEOF, other whitespace
+	       L(0), D(1), V(2), M(3), D(4), Q(5), C(6), E(7), O(8), W(9)*/
+	/* s0 */{ 1, ESNR,    2, ESNR,    2,    5,    6, ESWR, ESNR, ESNR}, // s0: NOAS
+	/* s1 */{ 1,    1, ESNR,    3, ESNR, ESNR, ESWR, ESWR, ESNR,    4}, // s1: NOAS
+	/* s2 */{ 2, ESNR, ESNR, ESNR, ESNR, ESNR, ESNR, ESWR, ESNR,    3}, // s2: NOAS
+	/* s3 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS}, // s3: ASNR (MVDTID)
+	/* s4 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS}, // s4: ASWR (KEY)
+	/* s5 */{ 5,    5,    5,    5,    5,    7,    5, ESWR,    5,    5}, // s5: NOAS (String literal transit)ion
+	/* s6 */{ 6,    6,    6,    6,    6,    6,    7, ESWR,    6,    6}, // s6: NOAS (Comment transition)
+	/* s7 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS}, // s7: ASNR (SL/Comment)
+	/* s8 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS}, // s8: ASNR (ES)
+	/* s9 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS}  // s9: ASWR (ER)
 };
 
 /* Define accepting states types */
@@ -170,13 +156,14 @@ static bab_intg transitionTable[][TABLE_COLUMNS] = {
 static bab_intg stateType[] = {
 	NOFS, /* 00 */
 	NOFS, /* 01 */
-	FSNR, /* 02 (MDTVID) - Variables */
-	FSWR, /* 03 (Keyword) */
-	NOFS, /* 04 */
+	NOFS, /* 02 */
+	FSNR, /* 03 (MDTVID) - Variables */
+	FSWR, /* 04 (Keyword) */
 	NOFS, /* 05 */
-	FSNR, /* 06 (SL) */
-	FSNR, /* 07 (Err1 - no retract) */
-	FSWR  /* 08 (Err2 - retract) */
+	NOFS, /* 06 */
+	FSNR, /* 07 (SL) */
+	FSNR, /* 08 (Err1 - no retract) */
+	FSWR  /* 09 (Err2 - retract) */
 
 };
 
@@ -215,13 +202,14 @@ Token funcErr	(bab_char lexeme[]);
 static PTR_ACCFUN finalStateTable[] = {
 	NULL,		/* -    [00] */
 	NULL,		/* -    [01] */
-	funcID,		/* VID	[02] */
-	funcKEY,	/* KEY  [03] */
-	NULL,		/* -    [04] */
+	NULL,		/* -    [02] */
+	funcID,		/* VID	[03] */
+	funcKEY,	/* KEY  [04] */
 	NULL,		/* -    [05] */
-	funcSL,		/* SL   [06] */
-	funcErr,	/* ERR1 [07] */
-	funcErr		/* ERR2 [08] */
+	NULL,		/* -    [06] */
+	funcSL,		/* SL   [07] */
+	funcErr,	/* ERR1 [08] */
+	funcErr 	/* ERR2 [09] */
 };
 
 /*
@@ -237,18 +225,14 @@ Language keywords
 static bab_char* keywordTable[KWT_SIZE] = {
 	"isA",			// generalization
 	"hasA",			// composition
-	"hasAN",		// aggregation
-
+	"hasAn",		// aggregation
 	"class",		// class variable
-
 	"private",		// declare the field to be private
 	"protected",	// declare the field to be protected
 	"public",		// declare the field to be public
-
 	"integer",		// declare the field to be an integer
 	"String",		// declare the field to be a string
 	"double",		// declare the field to be a double
-
 	"startDiagram",	// start a uml diagram
 	"endDiagram"	// end of the uml diagram
 };

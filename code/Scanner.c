@@ -142,15 +142,6 @@ Token tokenizer(void) {
 		case ';':
 			currentToken.code = EOS_T;
 			return currentToken;
-		case '&':
-			currentToken.code = MNID_T;
-			return currentToken;
-		case '_':
-			currentToken.code = VNID_T;
-			return currentToken;
-		case '"':
-			currentToken.code = STR_T;
-			return currentToken;
 		case '(':
 			currentToken.code = LPR_T;
 			return currentToken;
@@ -163,9 +154,6 @@ Token tokenizer(void) {
 		case '}':
 			currentToken.code = RBR_T;
 			return currentToken;
-		case '$':
-			currentToken.code = DTNID_T;
-			return currentToken;
 
 
 		/* Comments */
@@ -176,6 +164,7 @@ Token tokenizer(void) {
 				if (c == CHARSEOF0 || c == CHARSEOF255) {
 					readerRetract(sourceBuffer);
 					//return currentToken;
+					return currentToken;
 				}
 				else if (c == '\n') {
 					line++;
@@ -307,10 +296,12 @@ bab_intg nextClass(bab_char c) {
 	case CHRCOL6: /* Comment prefix/suffix */
 		val = 6;
 		break;
-	case CHRCOL7: /* newline */
+	case CHRCOL7: /* eos */
 		val = 7;
 		break;
-
+	case CHRCOL8: /* Whitespace */
+		val = 9;
+		break;
 	case CHARSEOF0:
 	case CHARSEOF255:
 		val = 5;
@@ -377,24 +368,34 @@ Token funcID(bab_char lexeme[]) {
 	Token currentToken = { 0 };
 	size_t length = strlen(lexeme);
 	bab_char lastch = lexeme[length - 1];
+	bab_char firstch = lexeme[0];
 	bab_intg isID = BAB_FALSE;
+
 	switch (lastch) {
-		case VNIDPREFIX:
-			currentToken.code = VNID_T;
-			isID = BAB_TRUE;
-			break;
-		case MNIDSUFFIX:
-			currentToken.code = MNID_T;
-			isID = BAB_TRUE;
-			break;
-		case DTNIDPREFIX:
-			currentToken.code = DTNID_T;
+		case MIDSUFFIX:
+			currentToken.code = MID_T;
 			isID = BAB_TRUE;
 			break;
 		default:
 			// Test Keyword
 			currentToken = funcKEY(lexeme);
 			break;
+	}
+	if (isID == BAB_FALSE)
+	switch (firstch) {
+	case VIDPREFIX:
+		currentToken.code = VID_T;
+		isID = BAB_TRUE;
+		break;
+
+	case DTIDPREFIX:
+		currentToken.code = DTID_T;
+		isID = BAB_TRUE;
+		break;
+	default:
+		// Test Keyword
+		currentToken = funcKEY(lexeme);
+		break;
 	}
 	if (isID == BAB_TRUE) {
 		strncpy(currentToken.attribute.idLexeme, lexeme, VID_LEN);
@@ -521,8 +522,14 @@ bab_void printToken(Token t) {
 	case SEOF_T:
 		printf("SEOF_T\t\t%d\t\n", t.attribute.seofType);
 		break;
-	case VNID_T:
+	case VID_T:
 		printf("VID_T\t\t%s\n", t.attribute.idLexeme);
+		break;
+	case MID_T:
+		printf("MID_T\t\t%s\n", t.attribute.idLexeme);
+		break;
+	case DTID_T:
+		printf("DTID_T\t\t%s\n", t.attribute.idLexeme);
 		break;
 	case STR_T:
 		printf("STR_T\t\t%d\t ", (bab_intg)t.attribute.codeType);
@@ -533,6 +540,18 @@ bab_void printToken(Token t) {
 		break;
 	case EOS_T:
 		printf("EOS_T\n");
+		break;
+	case LPR_T:
+		printf("LPR_T\n");
+		break;
+	case RPR_T:
+		printf("RPR_T\n");
+		break;
+	case LBR_T:
+		printf("LBR_T\n");
+		break;
+	case RBR_T:
+		printf("RBR_T\n");
 		break;
 	default:
 		printf("Scanner error: invalid token code: %d\n", t.code);
