@@ -167,6 +167,7 @@ Token tokenizer(void) {
 			currentToken.code = DTNID_T;
 			return currentToken;
 
+
 		/* Comments */
 		case '#':
 			newc = readerGetChar(sourceBuffer);
@@ -175,7 +176,6 @@ Token tokenizer(void) {
 				if (c == CHARSEOF0 || c == CHARSEOF255) {
 					readerRetract(sourceBuffer);
 					//return currentToken;
-					return currentToken;
 				}
 				else if (c == '\n') {
 					line++;
@@ -287,7 +287,7 @@ bab_intg nextState(bab_intg state, bab_char c) {
 /* TO_DO: Use your column configuration */
 
 /* Adjust the logic to return next column in TT */
-/*	[A-z](0), [0-9](1),	_(2), &(3), "(4), SEOF(5), other(6) */
+/*	L(0), D(1), V(2), M(3), D(4), Q(5), C(6),  E(7),  O(8) */
 
 bab_intg nextClass(bab_char c) {
 	bab_intg val = -1;
@@ -301,15 +301,16 @@ bab_intg nextClass(bab_char c) {
 	case CHRCOL4: /* Datatype indentifier Prefix */
 		val = 4;
 		break;
-	case CHRCOL5: /* newline */
-		val = 7;
+	case CHRCOL5: /* Quotations for String Literals */
+		val = 5;
 		break;
 	case CHRCOL6: /* Comment prefix/suffix */
-		val = 8;
+		val = 6;
 		break;
-	case CHRCOL7: /* Quotations for String Literals */
-		val = 9;
+	case CHRCOL7: /* newline */
+		val = 7;
 		break;
+
 	case CHARSEOF0:
 	case CHARSEOF255:
 		val = 5;
@@ -320,7 +321,7 @@ bab_intg nextClass(bab_char c) {
 		else if (isdigit(c))
 			val = 1;
 		else
-			val = 6;
+			val = 8;
 	}
 	return val;
 }

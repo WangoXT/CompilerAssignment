@@ -128,7 +128,7 @@ bab_intg main(int argc, char** argv) {
 *************************************************************
 */
 bab_void printLogo() {
-	printf("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+	printf("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 		" _____________________________________\n",
 		"|                                     |\n",
 		"|............BABEL LANGUAGE...........|\n",

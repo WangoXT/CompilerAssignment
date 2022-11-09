@@ -114,9 +114,11 @@ typedef struct Token {
 #define CHRCOL2 '_'		/* Variable Prefix */
 #define CHRCOL3 '&'		/* Method Suffix */
 #define CHRCOL4 '$'		/* Datatype indentifier Prefix */
-#define CHRCOL5 '\''	/* new line */
+#define CHRCOL5 '"'		/* Quotations for String Literals */
 #define CHRCOL6 '#'		/* Comment prefix/suffix */
-#define CHRCOL7 '"'		/* Quotations for String Literals */
+#define CHRCOL7 '\''	/* new line */
+
+
 
 /* These constants will be used on VID / MID function */
 #define MNIDSUFFIX '&'	/* Method identifier */
@@ -147,15 +149,16 @@ typedef struct Token {
 #define TABLE_COLUMNS 9
 static bab_intg transitionTable[][TABLE_COLUMNS] = {
 /*	     [A-z] ,[0-9],    _,    &,    $,    ",    #, SEOF, other
-	       L(0), D(1), V(2), M(3), D(4), Q(5), C(6), E(7),  O(8) */
-	/* s0 */{ 1, ESNR,    1, ESNR,    1,    4,    4,  ESWR,  ESNR}, // s0: NOAS
-	/* s1 */{ 1,    1, ESNR, ESNR, ESNR, ESNR, ESWR,  ESWR,     3}, // s1: NOAS
+	       L(0), D(1), V(2), M(3), D(4), Q(5), C(6),  E(7),  O(8) */
+	/* s0 */{ 1, ESNR,    1, ESNR,    1,    4,    5,  ESWR,  ESNR}, // s0: NOAS
+	/* s1 */{ 1,    1, ESNR,    2, ESNR, ESNR, ESWR,  ESWR,     3}, // s1: NOAS
 	/* s2 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s2: ASNR (MVDTID)
 	/* s3 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s3: ASWR (KEY)
-	/* s4 */{ 4,    4,    4,    4,    4,    4,    4,  ESWR,     5}, // s5: NOAS
-	/* s5 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s6: ASNR (SL)
-	/* s6 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s7: ASNR (ES)
-	/* s6 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s7: ASWR (ER)
+	/* s4 */{ 4,    4,    4,    4,    4,    6,    4,  ESWR,     4}, // s4: NOAS
+	/* s5 */{ 4,    4,    4,    4,    4,    4,    6,  ESWR,     4}, // s5: NOAS
+	/* s6 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s6: ASNR (SL)
+	/* s7 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s7: ASNR (ES)
+	/* s8 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s8: ASWR (ER)
 };
 
 /* Define accepting states types */
@@ -168,12 +171,12 @@ static bab_intg stateType[] = {
 	NOFS, /* 00 */
 	NOFS, /* 01 */
 	FSNR, /* 02 (MDTVID) - Variables */
-	FSNR, 
-	FSWR, /* 03 (KEY) */
+	FSWR, /* 03 (Keyword) */
 	NOFS, /* 04 */
-	FSNR, /* 05 (SL) */
-	FSNR, /* 06 (Err1 - no retract) */
-	FSWR  /* 07 (Err2 - retract) */
+	NOFS, /* 05 */
+	FSNR, /* 06 (SL) */
+	FSNR, /* 07 (Err1 - no retract) */
+	FSWR  /* 08 (Err2 - retract) */
 
 };
 
@@ -215,9 +218,10 @@ static PTR_ACCFUN finalStateTable[] = {
 	funcID,		/* VID	[02] */
 	funcKEY,	/* KEY  [03] */
 	NULL,		/* -    [04] */
-	funcSL,		/* SL   [05] */
-	funcErr,	/* ERR1 [06] */
-	funcErr		/* ERR2 [07] */
+	NULL,		/* -    [05] */
+	funcSL,		/* SL   [06] */
+	funcErr,	/* ERR1 [07] */
+	funcErr		/* ERR2 [08] */
 };
 
 /*
