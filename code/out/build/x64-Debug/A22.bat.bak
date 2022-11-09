@@ -33,7 +33,7 @@ echo "|\______   \_____ \_ |__   ____ |  |  |"
 echo "| |    |  _/\__  \ | __ \_/ __ \|  |  |"
 echo "| |    |   \ / __ \| \_\ \  ___/|  |__|"
 echo "| |______  /(____  /___  /\___  >____/|"
-echo "|		 \/      \/    \/     \/            |"
+echo "|		 \/      \/    \/     \/        |"
 echo "|             _   _   _               |"
 echo "|            |;|_|;|_|;|              |"
 echo "|            \\.    .  /              |"
@@ -49,9 +49,7 @@ echo "|              ||_   |                |"
 echo "| .. ALGONQUIN COLLEGE - 2022F .......|"
 echo "|_____________________________________|"
 ECHO "[SCANNER SCRIPT ...................]"
-ECHO "                                   "
-                           "
-
+ECHO "                                    " 
 ren *.exe %COMPILER%
 
 ::
@@ -65,7 +63,7 @@ ren *.exe %COMPILER%
 ::%COMPILER% %PARAM% %FILE4%.%EXTENSION%	> %FILE4%-%ASSIGNMENT%.%OUTPUT%	2> %FILE4%-%ASSIGNMENT%.%ERROR%
 ::%COMPILER% %PARAM% %FILE5%.%EXTENSION%	> %FILE5%-%ASSIGNMENT%.%OUTPUT%	2> %FILE5%-%ASSIGNMENT%.%ERROR%
 ::%COMPILER% %PARAM% %FILE6%.%EXTENSION%	> %FILE6%-%ASSIGNMENT%.%OUTPUT%	2> %FILE6%-%ASSIGNMENT%.%ERROR%
-%COMPILER% %PARAM% %FILE6%.%EXTENSION%	> %FILE6%-%ASSIGNMENT%.%OUTPUT%	2> %FILE7%-%ASSIGNMENT%.%ERROR%
+%COMPILER% %PARAM% %FILE7%.%EXTENSION%	> %FILE7%-%ASSIGNMENT%.%OUTPUT%	2> %FILE7%-%ASSIGNMENT%.%ERROR%
 
 :: SHOW OUTPUTS - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DIR *.OUT

@@ -144,18 +144,18 @@ typedef struct Token {
 	//* s7 */{FS,    FS,   FS,   FS,   FS,   FS,   FS}  // S7: ASWR (ER)
 
  /* TO_DO: State transition table definition */
-#define TABLE_COLUMNS 7
+#define TABLE_COLUMNS 9
 static bab_intg transitionTable[][TABLE_COLUMNS] = {
 /*	     [A-z] ,[0-9],    _,    &,    $,    ",    #, SEOF, other
 	       L(0), D(1), V(2), M(3), D(4), Q(5), C(6), E(7),  O(8) */
-	/* s0 */{ 1, ESNR,    1, ESNR,    1,    4,    4, ESWR,  ESNR}, // s0: NOAS
-	/* s1 */{ 1,    1, ESNR, ESNR, ESNR, ESNR, ESWR, ESWR,     3}, // s1: NOAS
-	/* s2 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS}, // s2: ASNR (MVDTID)
-	/* s3 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS}, // s3: ASWR (KEY)
-	/* s4 */{ 4,    4,    4,    4,    4,    4,    4, ESWR,     5}, // s5: NOAS
-	/* s5 */{FS,   FS,   FS,   FS,   FS,   FS,   FS    FS,    FS}, // s6: ASNR (SL)
-	/* s6 */{FS,   FS,   FS,   FS,   FS,   FS,   FS    FS,    FS}, // s7: ASNR (ES)
-	/* s6 */{FS,   FS,   FS,   FS,   FS,   FS,   FS    FS,    FS}, // s7: ASWR (ER)
+	/* s0 */{ 1, ESNR,    1, ESNR,    1,    4,    4,  ESWR,  ESNR}, // s0: NOAS
+	/* s1 */{ 1,    1, ESNR, ESNR, ESNR, ESNR, ESWR,  ESWR,     3}, // s1: NOAS
+	/* s2 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s2: ASNR (MVDTID)
+	/* s3 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s3: ASWR (KEY)
+	/* s4 */{ 4,    4,    4,    4,    4,    4,    4,  ESWR,     5}, // s5: NOAS
+	/* s5 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s6: ASNR (SL)
+	/* s6 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s7: ASNR (ES)
+	/* s6 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,    FS,    FS}, // s7: ASWR (ER)
 };
 
 /* Define accepting states types */
@@ -168,6 +168,7 @@ static bab_intg stateType[] = {
 	NOFS, /* 00 */
 	NOFS, /* 01 */
 	FSNR, /* 02 (MDTVID) - Variables */
+	FSNR, 
 	FSWR, /* 03 (KEY) */
 	NOFS, /* 04 */
 	FSNR, /* 05 (SL) */

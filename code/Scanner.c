@@ -383,7 +383,7 @@ Token funcID(bab_char lexeme[]) {
 			isID = BAB_TRUE;
 			break;
 		case MNIDSUFFIX:
-			currentToken.code = MNID_T
+			currentToken.code = MNID_T;
 			isID = BAB_TRUE;
 			break;
 		case DTNIDPREFIX:
@@ -520,7 +520,7 @@ bab_void printToken(Token t) {
 	case SEOF_T:
 		printf("SEOF_T\t\t%d\t\n", t.attribute.seofType);
 		break;
-	case VID_T:
+	case VNID_T:
 		printf("VID_T\t\t%s\n", t.attribute.idLexeme);
 		break;
 	case STR_T:
