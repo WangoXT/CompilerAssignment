@@ -83,10 +83,8 @@
 ReaderPointer readerCreate(bab_intg size, bab_intg increment, bab_intg mode) {
 	ReaderPointer readerPointer;
 	bab_intg counter;
-	/* TO_DO: Defensive programming */
-	if (size < 0 || increment < 0)   //|| mode != MODE_ADDIT && mode != MODE_MULTI && mode != MODE_FIXED
+	if (size < 0 || increment < 0) 
 		return NULL;
-	/* TO_DO: Adjust the values according to parameters */
 	if (!size) {
 		size = READER_DEFAULT_SIZE;
 		increment = READER_DEFAULT_INCREMENT;
@@ -94,25 +92,25 @@ ReaderPointer readerCreate(bab_intg size, bab_intg increment, bab_intg mode) {
 	if (!increment)
 		mode = MODE_FIXED;
 	readerPointer = (ReaderPointer)calloc(1, sizeof(BufferReader));
-	/* TO_DO: Defensive programming */
+
 	if (!readerPointer)
 		return NULL;
 
 	readerPointer->content = (bab_char*)malloc(size);
-	/* TO_DO: Defensive programming */
+
 	if (!readerPointer)
 		return NULL;
-	/* TO_DO: Initialize the histogram */
+
 	for (counter = 0; counter < NCHAR; counter++)
 		readerPointer->histogram[counter] = 0;
 
 	readerPointer->size = size;
 	readerPointer->increment = increment;
 	readerPointer->mode = mode;
-	/* TO_DO: Initialize flags */
+
 	readerPointer->flags |= READER_DEFAULT_FLAG;
 
-	/* TO_DO: The created flag must be signalized as EMP */
+	
 	readerPointer->flags |= SET_EMP;
 
 	return readerPointer;
