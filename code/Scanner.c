@@ -302,6 +302,9 @@ bab_intg nextClass(bab_char c) {
 	case CHRCOL8: /* Whitespace */
 		val = 9;
 		break;
+	case CHRCOL9: /* Class Prefix */
+		val = 10;
+		break;
 	case CHARSEOF0:
 	case CHARSEOF255:
 		val = 5;
@@ -390,6 +393,10 @@ Token funcID(bab_char lexeme[]) {
 
 	case DTIDPREFIX:
 		currentToken.code = DTID_T;
+		isID = BAB_TRUE;
+		break;
+	case CIDPREFIX:
+		currentToken.code = CID_T;
 		isID = BAB_TRUE;
 		break;
 	default:
@@ -530,6 +537,9 @@ bab_void printToken(Token t) {
 		break;
 	case DTID_T:
 		printf("DTID_T\t\t%s\n", t.attribute.idLexeme);
+		break;
+	case CID_T:
+		printf("CID_T\t\t%s\n", t.attribute.idLexeme);
 		break;
 	case STR_T:
 		printf("STR_T\t\t%d\t ", (bab_intg)t.attribute.codeType);

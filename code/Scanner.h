@@ -56,7 +56,8 @@ enum TOKENS {
 	INL_T,		/* 10: Run-time error token */
 	SEOF_T,		/* 11: Source end-of-file token */
 	MID_T,  	/* 12: Variable name identifier token (underscore) */
-	DTID_T		/* 13: Data type token (dollar sign) */
+	DTID_T,		/* 13: Data type token (dollar sign) */
+	CID_T		/* 14: Class name identifier ('at' symbol)*/
 };
 
 /* TO_DO: Operators token attributes */
@@ -118,12 +119,13 @@ typedef struct Token {
 #define CHRCOL6 '#'		/* Comment prefix/suffix */
 #define CHRCOL7 '\''	/* new line */
 #define CHRCOL8 ' '     /* whitespace */
-
+#define CHRCOL9 '@'
 
 /* These constants will be used on VID / MID function */
 #define MIDSUFFIX '&'	/* Method identifier */
 #define VIDPREFIX '_'	/* Variable identifier */
-#define DTIDPREFIX '$' /* Datatype identifier */
+#define DTIDPREFIX '$'  /* Datatype identifier */
+#define CIDPREFIX '@'  /* Class identifier */
 
 /* TO_DO: Error states and illegal state */
 #define FS		100		/* Illegal state */
@@ -131,20 +133,21 @@ typedef struct Token {
 #define ESNR	102		/* Error state with no retract */
 
  /* TO_DO: State transition table definition */
-#define TABLE_COLUMNS 10
+#define TABLE_COLUMNS 11
 static bab_intg transitionTable[][TABLE_COLUMNS] = {
 /*	     [A-z] ,[0-9],    _,    &,    $,    ",    #,SEOF, other whitespace
-	       L(0), D(1), V(2), M(3), D(4), Q(5), C(6), E(7), O(8), W(9)*/
-	/* s0 */{ 1, ESNR,    2, ESNR,    2,    5,    6, ESWR, ESNR, ESNR}, // s0: NOAS
-	/* s1 */{ 1,    1, ESNR,    3, ESNR, ESNR, ESWR, ESWR, ESNR,    4}, // s1: NOAS
-	/* s2 */{ 2, ESNR, ESNR, ESNR, ESNR, ESNR, ESNR, ESWR, ESNR,    3}, // s2: NOAS
-	/* s3 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS}, // s3: ASNR (MVDTID)
-	/* s4 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS}, // s4: ASWR (KEY)
-	/* s5 */{ 5,    5,    5,    5,    5,    7,    5, ESWR,    5,    5}, // s5: NOAS (String literal transit)ion
-	/* s6 */{ 6,    6,    6,    6,    6,    6,    7, ESWR,    6,    6}, // s6: NOAS (Comment transition)
-	/* s7 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS}, // s7: ASNR (SL/Comment)
-	/* s8 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS}, // s8: ASNR (ES)
-	/* s9 */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS}  // s9: ASWR (ER)
+	       L(0), D(1), V(2), M(3), D(4), Q(5), C(6), E(7), O(8), W(9), C(10) */
+	/* s0  */{ 1, ESNR,    2, ESNR,    2,    5,    6, ESWR, ESNR, ESNR, 10  }, //  s0: NOAS
+	/* s1  */{ 1,    1, ESNR,    3, ESNR, ESNR, ESWR, ESWR, ESNR,    4, ESNR}, //  s1: NOAS
+	/* s2  */{ 2, ESNR, ESNR, ESNR, ESNR, ESNR, ESNR, ESWR, ESNR,    3, ESNR}, //  s2: NOAS
+	/* s3  */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS, FS  }, //  s3: ASNR (MVDTCID)
+	/* s4  */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS, FS  }, //  s4: ASWR (KEY)
+	/* s5  */{ 5,    5,    5,    5,    5,    7,    5, ESWR,    5,    5, 5   }, //  s5: NOAS (String literal transit)ion
+	/* s6  */{ 6,    6,    6,    6,    6,    6,    7, ESWR,    6,    6, 6   }, //  s6: NOAS (Comment transition)
+	/* s7  */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS, FS  }, //  s7: ASNR (SL/Comment)
+	/* s8  */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS, FS  }, //  s8: ASNR (ES)
+	/* s9  */{FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS,   FS, FS  }, //  s9: ASWR (ER)
+	/* s10 */{10, ESNR, ESNR, ESNR, ESNR, ESNR, ESNR, ESNR, ESNR,    3, ESNR}  // s10: NOAS
 };
 
 /* Define accepting states types */
@@ -163,8 +166,8 @@ static bab_intg stateType[] = {
 	NOFS, /* 06 */
 	FSNR, /* 07 (SL) */
 	FSNR, /* 08 (Err1 - no retract) */
-	FSWR  /* 09 (Err2 - retract) */
-
+	FSWR, /* 09 (Err2 - retract) */
+	NOFS  /* 10 */
 };
 
 /*
@@ -209,7 +212,8 @@ static PTR_ACCFUN finalStateTable[] = {
 	NULL,		/* -    [06] */
 	funcSL,		/* SL   [07] */
 	funcErr,	/* ERR1 [08] */
-	funcErr 	/* ERR2 [09] */
+	funcErr, 	/* ERR2 [09] */
+	NULL		/* -    [10] */
 };
 
 /*

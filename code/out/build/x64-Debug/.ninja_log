@@ -73,3 +73,10 @@
 0	70	6897040803071500	CMakeFiles/BabCompiler.dir/MainScanner.c.obj	39076e7ffe2e670c
 4	70	6897040803071500	CMakeFiles/BabCompiler.dir/Scanner.c.obj	84771a281c5f643d
 71	188	6897040804023957	BabCompiler.exe	d89ec369df6f1876
+0	315	6899989936990796	CMakeFiles/BabCompiler.dir/Reader.c.obj	4a33107364ad2a1
+3	322	6899989937090819	CMakeFiles/BabCompiler.dir/Scanner.c.obj	84771a281c5f643d
+322	434	6899989937990961	BabCompiler.exe	d89ec369df6f1876
+1	230	6899990169179639	BabCompiler.exe	d89ec369df6f1876
+4	330	6907581572134777	CMakeFiles/BabCompiler.dir/MainScanner.c.obj	39076e7ffe2e670c
+0	331	6907581572234810	CMakeFiles/BabCompiler.dir/Scanner.c.obj	84771a281c5f643d
+331	466	6907581573235355	BabCompiler.exe	d89ec369df6f1876

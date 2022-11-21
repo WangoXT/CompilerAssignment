@@ -1,36 +1,36 @@
 #hello this is a comment#
 startDiagram 
-class _Foo {  								
+class @Foo {  								
 	private integer _age  
 	public getNum&
 }											
-class _Bar {									
+class @Bar {									
 	private String _name 
 	public setName&	
 }											
-class _Country {								
+class @Country {								
 	"Canada"									
 	"U.S"										
 }											
-class _Airport {								
+class @Airport {								
 	private String _name 
 	private $country _Country 
 	public getName&
 	public getCountry&
 }											
-class _Address {								
+class @Address {								
 	public String _city 
 	public String _state 
 	public String _country 
 	public display&	
 }											
-class _Employee {							
+class @Employee {							
 	public integer _id 
 	public String _name 
 	public $address _Address 
 	public display&
 }											
-_Foo isA _Bar 
-_Country hasA _Airport 		
-_Employee hasAn _Address 
+@Foo isA @Bar 
+@Country hasA @Airport 		
+@Employee hasAn @Address 
 endDiagram 

@@ -13,7 +13,7 @@ class _Country {
 	"U.S"										
 }											
 class _Airport {								
-	private String _name 
+	private string _name 
 	private $country _Country 
 	public getName&
 	public getCountry&
