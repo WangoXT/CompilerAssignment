@@ -119,7 +119,7 @@ typedef struct Token {
 #define CHRCOL6 '#'		/* Comment prefix/suffix */
 #define CHRCOL7 '\''	/* new line */
 #define CHRCOL8 ' '     /* whitespace */
-#define CHRCOL9 '@'
+#define CHRCOL9 '@'     /* Class token */
 
 /* These constants will be used on VID / MID function */
 #define MIDSUFFIX '&'	/* Method identifier */
