@@ -59,9 +59,6 @@ extern bab_char* keywordTable[];
 bab_intg syntaxErrorNumber = 0;
 
 #define STR_LANGNAME	"Bab"
-#define LANG_WRTE		"print&"
-#define LANG_READ		"input&"
-#define LANG_MAIN		"main&"
 
 /* TO_DO: Create ALL constants for keywords (sequence given in table.h) */
 
@@ -78,8 +75,8 @@ enum KEYWORDS {
 	KW_integer,
 	KW_String,
 	KW_double,
-	startDiagram,
-	endDiagram
+	KW_startDiagram,
+	KW_endDiagram
 };
 
 /* Function definitions */
@@ -89,15 +86,23 @@ bab_void syncErrorHandler(bab_intg);
 bab_void printError();
 
 /* TO_DO: Place ALL non-terminal function declarations */
-bab_void codeSession();
-bab_void dataSession();
-bab_void optVarListDeclarations();
+bab_void propertiesSession();
+bab_void optRelationStatements();
 bab_void optionalStatements();
 bab_void outputStatement();
 bab_void outputVariableList();
+bab_void privateVariableStatement();
+bab_void publicVariableStatement();
+bab_void protectedVariableStatement();
+bab_void privateMethodStatement();
+bab_void publicMethodStatement();
+bab_void protectedMethodStatement();
+bab_void relationSession();
 bab_void program();
 bab_void statement();
 bab_void statements();
 bab_void statementsPrime();
-
+bab_void relationStatements();
+bab_void relationStatement();
+bab_void relationStatementsPrime();
 #endif

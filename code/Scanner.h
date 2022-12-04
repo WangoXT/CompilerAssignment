@@ -69,14 +69,9 @@ typedef enum SourceEndOfFile { SEOF_0, SEOF_255 } EofOperator;
 /* TO_DO: Data structures for declaring the token and its attributes */
 typedef union TokenAttribute {
 	bab_intg codeType;      /* integer attributes accessor */
-	//AriOperator arithmeticOperator;		/* arithmetic operator attribute code */
-	//RelOperator relationalOperator;		/* relational operator attribute code */
-	//LogOperator logicalOperator;		/* logical operator attribute code */
 	EofOperator seofType;				/* source-end-of-file attribute code */
-	//bab_intg intValue;						/* integer literal attribute (value) */
 	bab_intg keywordIndex;					/* keyword index in the keyword table */
 	bab_intg contentString;				/* string literal offset from the beginning of the string literal buffer (stringLiteralTable->content) */
-	//bab_real floatValue;					/* floating-point literal attribute (value) */
 	bab_char idLexeme[VID_LEN + 1];		/* variable identifier token attribute */
 	bab_char errLexeme[ERR_LEN + 1];		/* error token attribite */
 } TokenAttribute;
@@ -85,8 +80,6 @@ typedef union TokenAttribute {
 typedef struct idAttibutes {
 	bab_byte flags;			/* Flags information */
 	union {
-		//bab_intg intValue;				/* Integer value */
-		//bab_real floatValue;			/* Float value */
 		bab_char* stringContent;		/* String value */
 	} values;
 } IdAttibutes;

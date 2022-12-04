@@ -170,14 +170,14 @@ bab_void printError() {
  ***********************************************************
  */
 bab_void program() {
+	
 	switch (lookahead.code) {
-	case MNID_T:
-		if (strncmp(lookahead.attribute.idLexeme, LANG_MAIN, 5) == 0) {
-			matchToken(MNID_T, NO_ATTR);
-			matchToken(LBR_T, NO_ATTR);
-			dataSession();
-			codeSession();
-			matchToken(RBR_T, NO_ATTR);
+	case KW_T:
+		if(KW_startDiagram){
+			matchToken(KW_T, KW_startDiagram);
+			propertiesSession();
+			relationSession();
+			matchToken(KW_T, KW_endDiagram);
 			break;
 		}
 		else {
@@ -191,7 +191,6 @@ bab_void program() {
 	}
 	printf("%s%s\n", STR_LANGNAME, ": Program parsed");
 }
-
 /*
  ************************************************************
  * dataSession
@@ -199,12 +198,14 @@ bab_void program() {
  * FIRST(<program>)= {KW_T (KW_data)}.
  ***********************************************************
  */
-bab_void dataSession() {
-	matchToken(KW_T, KW_data);
-	matchToken(LBR_T, NO_ATTR);
-	optVarListDeclarations();
-	matchToken(RBR_T, NO_ATTR);
-	printf("%s%s\n", STR_LANGNAME, ": Data Session parsed");
+bab_void relationSession() {
+	//matchToken(CID_T, NO_ATTR);
+	optRelationStatements();
+
+	if (lookahead.code == CID_T)
+		relationSession();
+
+	printf("%s%s\n", STR_LANGNAME, ": Relation Session parsed");
 }
 
 /*
@@ -214,12 +215,60 @@ bab_void dataSession() {
  * FIRST(<opt_varlist_declarations>) = { e, KW_T (KW_int), KW_T (KW_real), KW_T (KW_string)}.
  ***********************************************************
  */
-bab_void optVarListDeclarations() {
+bab_void optRelationStatements() {
 	switch (lookahead.code) {
+	case CID_T:
+		relationStatements();
+		break;
 	default:
 		; // Empty
 	}
-	printf("%s%s\n", STR_LANGNAME, ": Optional Variable List Declarations parsed");
+	printf("%s%s\n", STR_LANGNAME, ": Optional Relation Statement parsed");
+}
+
+bab_void relationStatements() {
+	relationStatement();
+	relationStatementsPrime();
+	printf("%s%s\n", STR_LANGNAME, ": Statements parsed");
+}
+
+bab_void relationStatementsPrime() {
+	switch (lookahead.code) {
+	case CID_T:
+		relationStatements();
+		break;
+	default:
+		; //empty string
+	}
+}
+
+bab_void relationStatement() {
+	switch (lookahead.code)
+	{
+		case CID_T:
+			matchToken(CID_T, NO_ATTR);
+			switch (lookahead.attribute.codeType)
+			{
+			case KW_isA:
+				matchToken(KW_T, KW_isA);
+				matchToken(CID_T, NO_ATTR);
+				break;
+			case KW_hasA:
+				matchToken(KW_T, KW_hasA);
+				matchToken(CID_T, NO_ATTR);
+				break;
+			case KW_hasAn:
+				matchToken(KW_T, KW_hasAn);
+				matchToken(CID_T, NO_ATTR);
+				break;
+		default:
+			printError();
+		}
+		break;
+	default:
+		printError();
+	}
+	printf("%s%s\n", STR_LANGNAME, ": Statement parsed");
 }
 
 /*
@@ -229,14 +278,18 @@ bab_void optVarListDeclarations() {
  * FIRST(<codeSession>)= {KW_T (KW_code)}.
  ***********************************************************
  */
-bab_void codeSession() {
-	matchToken(KW_T, KW_code);
+bab_void propertiesSession() {
+	matchToken(KW_T, KW_class);
+	matchToken(CID_T, NO_ATTR);
 	matchToken(LBR_T, NO_ATTR);
 	optionalStatements();
 	matchToken(RBR_T, NO_ATTR);
-	printf("%s%s\n", STR_LANGNAME, ": Code Session parsed");
-}
 
+	if (lookahead.attribute.codeType == KW_class)
+		propertiesSession();
+
+	printf("%s%s\n", STR_LANGNAME, ": Properties Session parsed");
+}
 /* TO_DO: Continue the development (all non-terminal functions) */
 
 /*
@@ -249,12 +302,12 @@ bab_void codeSession() {
  */
 bab_void optionalStatements() {
 	switch (lookahead.code) {
-	case MNID_T:
-		if ((strncmp(lookahead.attribute.idLexeme, LANG_WRTE, 6) == 0) ||
-			(strncmp(lookahead.attribute.idLexeme, LANG_READ, 6) == 0)) {
-			statements();
-			break;
-		}
+	case KW_T:
+		statements();
+		break;
+	case STR_T:
+		statements();
+		break;
 	default:
 		; // Empty
 	}
@@ -279,17 +332,18 @@ bab_void statements() {
  ************************************************************
  * Statements Prime
  * BNF: <statementsPrime> -> <statement><statementsPrime> | ϵ
- * FIRST(<statementsPrime>) = { ϵ , IVID_T, FVID_T, SVID_T, 
+ * FIRST(<statementsPrime>) = { ϵ , IVID_T, FVID_T, SVID_T,
  *		KW_T(KW_if), KW_T(KW_while), MNID_T(input&), MNID_T(print&) }
  ***********************************************************
  */
 bab_void statementsPrime() {
 	switch (lookahead.code) {
-	case MNID_T:
-		if (strncmp(lookahead.attribute.idLexeme, LANG_WRTE, 6) == 0) {
+		case KW_T:
+				statements();
+				break;
+		case STR_T:
 			statements();
 			break;
-		}
 	default:
 		; //empty string
 	}
@@ -308,14 +362,48 @@ bab_void statement() {
 	switch (lookahead.code) {
 	case KW_T:
 		switch (lookahead.attribute.codeType) {
+		case KW_private:
+			matchToken(KW_T, KW_private);
+			switch (lookahead.code)
+			{
+			case DTID_T:
+				privateVariableStatement();
+				break;
+			case MID_T:
+				privateMethodStatement();
+				break;
+			}
+			break;
+		case KW_public:
+			matchToken(KW_T, KW_public);
+			switch (lookahead.code)
+			{
+			case DTID_T:
+				publicVariableStatement();
+				break;
+			case MID_T:
+				publicMethodStatement();
+				break;
+			}
+			break;
+		case KW_protected:
+			matchToken(KW_T, KW_protected);
+			switch (lookahead.code)
+			{
+			case DTID_T:
+				privateVariableStatement();
+				break;
+			case MID_T:
+				privateMethodStatement();
+				break;
+			}
+			break;
 		default:
 			printError();
 		}
 		break;
-	case MNID_T:
-		if (strncmp(lookahead.attribute.idLexeme, LANG_WRTE, 6) == 0) {
-			outputStatement();
-		}
+	case STR_T:
+		matchToken(STR_T, NO_ATTR);
 		break;
 	default:
 		printError();
@@ -330,29 +418,33 @@ bab_void statement() {
  * FIRST(<output statement>) = { MNID_T(print&) }
  ***********************************************************
  */
-bab_void outputStatement() {
-	matchToken(MNID_T, NO_ATTR);
-	matchToken(LPR_T, NO_ATTR);
-	outputVariableList();
-	matchToken(RPR_T, NO_ATTR);
-	matchToken(EOS_T, NO_ATTR);
-	printf("%s%s\n", STR_LANGNAME, ": Output statement parsed");
+
+bab_void privateVariableStatement() {
+	matchToken(DTID_T, NO_ATTR);
+	matchToken(VID_T, NO_ATTR);
+	printf("%s%s\n", STR_LANGNAME, ": Private Variable statement parsed");
+}
+bab_void publicVariableStatement() {
+	matchToken(DTID_T, NO_ATTR);
+	matchToken(VID_T, NO_ATTR);
+	printf("%s%s\n", STR_LANGNAME, ": Public Variable statement parsed");
+}
+bab_void protectedVariableStatement() {
+	matchToken(DTID_T, NO_ATTR);
+	matchToken(VID_T, NO_ATTR);
+	printf("%s%s\n", STR_LANGNAME, ": Protected Variable statement parsed");
 }
 
-/*
- ************************************************************
- * Output Variable List
- * BNF: <opt_variable list> -> <variable list> | ϵ
- * FIRST(<opt_variable_list>) = { IVID_T, FVID_T, SVID_T, ϵ }
- ***********************************************************
- */
-bab_void outputVariableList() {
-	switch (lookahead.code) {
-	case STR_T:
-		matchToken(STR_T, NO_ATTR);
-		break;
-	default:
-		;
-	}
-	printf("%s%s\n", STR_LANGNAME, ": Output variable list parsed");
+bab_void privateMethodStatement() {
+	matchToken(MID_T, NO_ATTR);
+	printf("%s%s\n", STR_LANGNAME, ": Private Method statement parsed");
 }
+bab_void publicMethodStatement() {
+	matchToken(MID_T, NO_ATTR);
+	printf("%s%s\n", STR_LANGNAME, ": Public Method statement parsed");
+}
+bab_void protectedMethodStatement() {
+	matchToken(MID_T, NO_ATTR);
+	printf("%s%s\n", STR_LANGNAME, ": Protected Method statement parsed");
+}
+
